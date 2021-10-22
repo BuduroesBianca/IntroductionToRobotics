@@ -3,4 +3,4 @@ Introduction to Robotics laboratory homeworks, taken in the 3rd year at the Facu
 
 ## Homework 1
 
-<img src="Homework1/IMG_4357.jpeg" width="100" height="100"/>
+<img src="IMG_4357.jpeg" width="330" height = "400">
