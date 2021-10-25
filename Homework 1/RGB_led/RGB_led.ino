@@ -10,8 +10,11 @@ int potValue0 = 0;
 int potValue1 = 0;
 int potValue2 = 0;
 
+int brightnessRed, brightnessGreen, brightnessBlue;
+
+const int maxAnalogValue = 255, maxVoltageValue = 1023;
+
 void setup() {
-  // put your setup code here, to run once:
   pinMode(ledPinGreen,OUTPUT);
   pinMode(ledPinRed,OUTPUT);
   pinMode(ledPinBlue,OUTPUT);
@@ -25,8 +28,12 @@ void loop() {
   potValue0 = analogRead(potPin0);
   potValue1 = analogRead(potPin1);
   potValue2 = analogRead(potPin2);
+
+  brightnessRed = map(potValue0,0,maxVoltageValue,0,maxAnalogValue);
+  brightnessBlue = map(potValue1,0,maxVoltageValue,0,maxAnalogValue);
+  brightnessGreen = map(potValue2,0,maxVoltageValue,0,maxAnalogValue);
   
-  analogWrite(ledPinRed,potValue0/4);
-  analogWrite(ledPinBlue,potValue1/4);
-  analogWrite(ledPinGreen,potValue2/4);
+  analogWrite(ledPinRed,brightnessRed);
+  analogWrite(ledPinBlue,brightnessBlue);
+  analogWrite(ledPinGreen,brightnessGreen);
 }
