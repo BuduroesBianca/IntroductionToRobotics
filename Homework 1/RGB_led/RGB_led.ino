@@ -2,13 +2,13 @@ const int ledPinGreen = 10;
 const int ledPinRed = 11;
 const int ledPinBlue = 9;
 
-const int potPin0 = A0;
-const int potPin1 = A1;
-const int potPin2 = A2;
+const int potPinRed = A0;
+const int potPinBlue = A1;
+const int potPinGreen = A2;
 
-int potValue0 = 0;
-int potValue1 = 0;
-int potValue2 = 0;
+int potValueRed = 0;
+int potValueBlue = 0;
+int potValueGreen = 0;
 
 int brightnessRed, brightnessGreen, brightnessBlue;
 
@@ -19,19 +19,19 @@ void setup() {
   pinMode(ledPinRed,OUTPUT);
   pinMode(ledPinBlue,OUTPUT);
   
-  pinMode(potPin0,INPUT);
-  pinMode(potPin1,INPUT);
-  pinMode(potPin2,INPUT);
+  pinMode(potPinRed,INPUT);
+  pinMode(potPinBlue,INPUT);
+  pinMode(potPinGreen,INPUT);
 }
 
 void loop() {
-  potValue0 = analogRead(potPin0);
-  potValue1 = analogRead(potPin1);
-  potValue2 = analogRead(potPin2);
+  potValueRed = analogRead(potPinRed);
+  potValueBlue = analogRead(potPinBlue);
+  potValueGreen = analogRead(potPinGreen);
 
-  brightnessRed = map(potValue0,0,maxVoltageValue,0,maxAnalogValue);
-  brightnessBlue = map(potValue1,0,maxVoltageValue,0,maxAnalogValue);
-  brightnessGreen = map(potValue2,0,maxVoltageValue,0,maxAnalogValue);
+  brightnessRed = map(potValueRed,0,maxVoltageValue,0,maxAnalogValue);
+  brightnessBlue = map(potValueBlue,0,maxVoltageValue,0,maxAnalogValue);
+  brightnessGreen = map(potValueGreen,0,maxVoltageValue,0,maxAnalogValue);
   
   analogWrite(ledPinRed,brightnessRed);
   analogWrite(ledPinBlue,brightnessBlue);
