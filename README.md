@@ -12,4 +12,4 @@ Use a separat potentiometer in controlling each of the color of the RGB led (Red
 The code can be found [here](https://github.com/BuduroesBianca/IntroductionToRobotics/blob/main/Homework%201/RGB_led/RGB_led.ino).
 </br>
 
-<img src="Homework 1/IMG_4357.jpeg" width="330" height = "400">
+<img src="Homework 1/IMG_2784.jpeg" width="330" height = "400">
