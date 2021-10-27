@@ -14,7 +14,7 @@ The code can be found [here](https://github.com/BuduroesBianca/IntroductionToRob
 
 ### Picture of the setup
 
-<img src="Homework 1/IMG_2784.jpg" width="400" height = "266">
+<img src="Homework 1/IMG_2784.JPG" width="500" height = "366">
 
 ### Video showcasing the functionality
 
