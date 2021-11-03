@@ -41,7 +41,7 @@ a beeping sound from the buzzer at a constant interval. Duration:
 for people and a beeping sound from the buzzer, at a constant interval, faster than the beeping in state 3. This state should last 5
 seconds
 
-**The code can be found** [here](https://github.com/BuduroesBianca/IntroductionToRobotics/blob/main/Homework%203/Homework_3.ino).
+**The code can be found** [here](https://github.com/BuduroesBianca/IntroductionToRobotics/blob/main/Homework%202/TrafficLights/TrafficLights.ino).
 </br>
 
 ### Picture of the setup
