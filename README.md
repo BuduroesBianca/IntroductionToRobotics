@@ -26,7 +26,7 @@ Video can be found [here](https://www.youtube.com/watch?v=NjVsNNJ_Mvk).
 5 LEDs, 1 button, 1 buzzer, resistors and wires (per logic)
 
 ### Technical Task
-Building the traffic lights for a crosswalk. You will use 2 LEDs to represent the traffic lights for people (red and green) and 3 LEDs to represent the traffic lights for cars (red, yellow and green).<br/>
+Building the traffic lights for a crosswalk. You will use 2 LEDs to represent the traffic lights for people (red and green) and 3 LEDs to represent the traffic lights for cars (red, yellow and green).<br/><br/>
 **The system has the following states:**
 1. **State 1** (default, reinstated after state 4 ends): green light for cars,
 red light for people, no sounds. Duration: indefinite, changed by
