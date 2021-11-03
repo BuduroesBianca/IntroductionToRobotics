@@ -136,7 +136,7 @@ void lightsFlow(){
       greenPasserState = LOW; 
       redPasserState = HIGH; 
       
-      buttonState = HIGH;
+      buttonState = digitalRead(pushButton);
       Run = false;
   }
   digitalWrite(ledRedPin,redCarState);
