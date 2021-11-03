@@ -46,7 +46,7 @@ seconds
 
 ### Picture of the setup
 
-<img src="Homework 3/IMG_2845.jpg" width="600" height = "461">
+<img src="Homework 2/IMG_2845.jpg" width="600" height = "461">
 
 ### Video showcasing the functionality
 
