@@ -1,18 +1,19 @@
-const int ledGreen = 6;
-const int ledYellow = 5;
-const int ledRed = 3;
+const int ledGreenPin = 6;
+const int ledYellowPin = 5;
+const int ledRedPin = 3;
 
-const int ledGreenPasser = 10;
-const int ledRedPasser = 9;
-
-int greenState;
-int yellowState;
-int redState;
-int redPasserState;
-int greenPasserState;
+const int ledGreenPasserPin = 10;
+const int ledRedPasserPin = 9;
 
 const int pushButton = 2;
 
+const int buzzerPin = 11;
+
+bool greenCarState;
+bool yellowCarState;
+bool redCarState;
+bool redPasserState;
+bool greenPasserState;
 bool buttonState = LOW;
 
 bool reading = LOW;
@@ -21,33 +22,40 @@ bool lastReading = LOW;
 int lastDebounceTimer = 0;
 const int debounceInterval = 50;
 
-const int buzzerPin = 11;
 int buzzerTone = 1000;
+int buzzerDuration = 30;
 
-const long interval = 27000;
+unsigned long startTime = 0;
+unsigned long previousMillis = 0;
+unsigned long currentMillis = 0;
 
+const long intervalBlink = 500;
+const long intervalBuzzer = 1000;
+
+const int state1Interval = 10000;
+const int state2Interval = 13000;
+const int state3Interval = 23000;
+const int state4Interval = 28000;
 
 void setup() {
   pinMode(pushButton,INPUT_PULLUP);
-  pinMode(ledGreen,OUTPUT);
-  pinMode(ledYellow,OUTPUT);
-  pinMode(ledRed,OUTPUT);
-  pinMode(ledGreenPasser,OUTPUT);
-  pinMode(ledRedPasser,OUTPUT);
+  pinMode(ledGreenPin,OUTPUT);
+  pinMode(ledYellowPin,OUTPUT);
+  pinMode(ledRedPin,OUTPUT);
+  pinMode(ledGreenPasserPin,OUTPUT);
+  pinMode(ledRedPasserPin,OUTPUT);
   
   Serial.begin(9600);
 
-  digitalWrite(ledGreen,HIGH);
-  digitalWrite(ledRedPasser,HIGH);
-
+  digitalWrite(ledGreenPin,HIGH);
+  digitalWrite(ledRedPasserPin,HIGH);
 }
-
-unsigned long offAt = 0;
 
 void loop()
 {
-  Serial.println(digitalRead(pushButton));
+  
   reading = digitalRead(pushButton);
+  Serial.println(reading);
 
   if(reading != lastReading){
     lastDebounceTimer = millis();
@@ -57,103 +65,84 @@ void loop()
     if(reading != buttonState){
       buttonState = reading;
       if(buttonState == LOW){
-        State2();
+        startTime = millis();
+        lightsFlow();
       }
     }
   }
   
   lastReading = reading;
-  
 }
-unsigned long previousMillis =0;
-unsigned long previousMillisB =0;
-unsigned long startTime =0;
-const long intervalBlink =500;
-const long intervalBuzzer1  =1000;
-const long intervalBuzzer2  =500;
-unsigned long currentMillis = 0;
-unsigned long currentMillisB = 0;
 
-void State2(){
-  
-  int ok = 1;
-  while(ok){
-  unsigned long checkTime = millis();
-  unsigned long elapsedTime = checkTime - startTime;
-  if(elapsedTime > interval) {
+void lightsFlow(){
 
-    startTime = checkTime;   
-
+  bool Run = true;
+  while(Run == true){
+    
+   unsigned long checkTime = millis();
+   unsigned long elapsedTime = checkTime - startTime;
+   
+  if (elapsedTime < state1Interval){
+     redCarState = LOW;             
+     yellowCarState = LOW;            
+     greenCarState = HIGH; 
+     greenPasserState = LOW; 
+     redPasserState = HIGH; 
   }
   
-  // verdele de la masini mai sta aprins inca 10 sec dupa apasare buton
-  if (elapsedTime < 10000){
-    redState = LOW;             
-    yellowState = LOW;            
-    greenState = HIGH; 
-    greenPasserState = LOW; 
-    redPasserState = HIGH; 
-  }
+  if (elapsedTime > state1Interval && elapsedTime < state2Interval){
+      redCarState = LOW;             
+      yellowCarState = HIGH;            
+      greenCarState = LOW ;   
+      greenPasserState = LOW; 
+      redPasserState = HIGH; 
+    }
   
-  // aprindem galbenul de la masini pt 3 secunde
-  if (elapsedTime > 10000 && elapsedTime < 13000){
-    redState = LOW;             
-    yellowState = HIGH;            
-    greenState = LOW ;   
-    greenPasserState = LOW; 
-    redPasserState = HIGH; 
-  }
-  //aprindem rosu de la masini si verde de la pietoni pt 10 sec
-   if (elapsedTime > 13000 && elapsedTime < 23000){
-    redState = HIGH;             
-    yellowState = LOW;            
-    greenState = LOW ;   
+   if (elapsedTime > state2Interval && elapsedTime < state3Interval){
+    redCarState = HIGH;             
+    yellowCarState = LOW;            
+    greenCarState = LOW ;   
     greenPasserState = HIGH; 
     redPasserState = LOW; 
     
-    currentMillisB =millis();
+    currentMillis = millis();
     
-    if(currentMillisB - previousMillisB >= intervalBuzzer1){
-      previousMillisB = currentMillisB;
-        tone(buzzerPin, buzzerTone, 30);
-      }
-  }
-
-   if (elapsedTime > 23000 && elapsedTime <28000){
-    currentMillis =millis();
-    
-    if(currentMillis - previousMillis >= intervalBlink){
+    if (currentMillis - previousMillis >= intervalBuzzer){
       previousMillis = currentMillis;
-        if(greenPasserState ==LOW) {
-          greenPasserState =HIGH;
-        }
-        else{
-          greenPasserState =LOW;
-        }
-      }
-      currentMillisB =millis();
-    
-    if(currentMillisB - previousMillisB >= intervalBuzzer2){
-      previousMillisB = currentMillisB;
-        tone(buzzerPin, buzzerTone, 30);
+        tone(buzzerPin, buzzerTone, buzzerDuration);
       }
     }
-    if (elapsedTime > 26000){
-    redState = LOW;             
-    yellowState = LOW;            
-    greenState = HIGH ;   
-    greenPasserState = LOW; 
-    redPasserState = HIGH; 
-    buttonState = HIGH;
-    ok=0;
+  
+    if (elapsedTime > state3Interval && elapsedTime < state4Interval){
+      
+      currentMillis = millis();
+    
+      if (currentMillis - previousMillis >= intervalBlink){
+        previousMillis = currentMillis;
+        tone(buzzerPin, buzzerTone, buzzerDuration);
+          if(greenPasserState ==LOW) {
+            greenPasserState =HIGH;
+          }
+          else{
+            greenPasserState =LOW;
+          }
+       }
+    }
+    
+    if (elapsedTime > state4Interval){
+      redCarState = LOW;             
+      yellowCarState = LOW;            
+      greenCarState = HIGH ;   
+      greenPasserState = LOW; 
+      redPasserState = HIGH; 
+      
+      buttonState = HIGH;
+      Run = false;
   }
-  
-  
-  digitalWrite(ledRed,redState);
-  digitalWrite(ledGreen,greenState);
-  digitalWrite(ledYellow,yellowState);
-  digitalWrite(ledRedPasser,redPasserState);
-  digitalWrite(ledGreenPasser,greenPasserState);
-  
+  digitalWrite(ledRedPin,redCarState);
+  digitalWrite(ledGreenPin,greenCarState);
+  digitalWrite(ledYellowPin,yellowCarState);
+  digitalWrite(ledRedPasserPin,redPasserState);
+  digitalWrite(ledGreenPasserPin,greenPasserState);
   }
 }
