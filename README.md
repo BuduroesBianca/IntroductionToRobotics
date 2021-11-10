@@ -52,3 +52,22 @@ seconds
 
 Video can be found [here](https://www.youtube.com/watch?v=MHa8Tr0oopY).
 
+## Homework #3
+
+### Components
+A buzzer and a 7-segment display.
+
+### Technical Task
+Should detect EMF (check body and near outlets). It should print the value on the 7-segment display (or light the led bar) and hould make a sound based on the intensity.
+
+**The code can be found** [here](https://github.com/BuduroesBianca/IntroductionToRobotics/blob/main/Homework%203/EMFdetector/EMFdetector.ino).
+</br>
+
+### Picture of the setup
+
+<img src="Homework 3/IMG_2897.jpg" width="400" height = "600">
+
+### Video showcasing the functionality
+
+Video can be found [here](https://www.youtube.com/watch?v=mGoGs3zRojM).
+
