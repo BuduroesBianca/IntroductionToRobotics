@@ -120,5 +120,6 @@ void loop() {
       displayNumber(9);  
     }
     Serial.println(average); 
+    delay(40);
   }        
 }
