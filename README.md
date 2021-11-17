@@ -95,7 +95,7 @@ increment if you keep the joystick in one position.
 
 ### Picture of the setup
 
-<img src="Homework 4/IMG_5557.JPG" width="600" height = "800">
+<img src="Homework 4/IMG_5557.JPG" width="400" height = "533">
 
 ### Video showcasing the functionality
 
