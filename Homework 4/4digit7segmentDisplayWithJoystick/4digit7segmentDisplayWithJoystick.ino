@@ -14,27 +14,29 @@ const int segD3 = 5;
 const int segD4 = 4;
 
 bool dpState = LOW;
-bool swState = LOW;
-bool lastSwState = LOW;
+int digit = 0;
 int switchValue;
 int xValue = 0;
 int yValue = 0;
 
 bool joyMoved = false;
-bool joyMoved1 = false;
-int digit = 0;
-int minThreshold= 400;
-int maxThreshold= 600;
-int minThreshold1= 500;
-int maxThreshold1= 700;
+int minThreshold = 400;
+int maxThreshold = 600;
+
+bool switchDigit = false;
+const int debounceInterval = 50;
+
+unsigned long previousMillis = 0;
+unsigned long currentMillis = 0;
+const long intervalBlink = 500;
+
+const int displayCount = 4;
+int currentDisplayAddress = 4;
 int currentDisplay = 0;
 
 int displayDigits[] = {
   segD1, segD2, segD3, segD4
 };
-
-const int displayCount = 4;
-int currentDisplayAddress = 4;
 
 int digitArray[16] = {
 //A B C D E F G DP 
@@ -61,13 +63,13 @@ int valuesSaved[displayCount] = {
 };
 
 void setup() {
-  pinMode(dataPin,OUTPUT);
-  pinMode(latchPin,OUTPUT);
-  pinMode(clockPin,OUTPUT);
+  pinMode(dataPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
 
   pinMode(pinSW, INPUT_PULLUP);
-  pinMode(pinX,INPUT);
-  pinMode(pinY,INPUT);
+  pinMode(pinX, INPUT);
+  pinMode(pinY, INPUT);
 
   attachInterrupt(digitalPinToInterrupt(pinSW), editDigit, FALLING);
 
@@ -75,88 +77,83 @@ void setup() {
     pinMode(displayDigits[i], OUTPUT);
     digitalWrite(displayDigits[i], LOW);
   }
-
   Serial.begin(9600);
 }
-
-bool switchDigit = false;
-const int debounceInterval = 50;
-
-unsigned long previousMillis = 0;
-unsigned long currentMillis = 0;
-const long intervalBlink = 500;
 
 void loop() {
 
   readValuesFromMemory();
   
   showAll();
-  Serial.println(dpState);
 
   if(switchDigit == true) {
     xValue = analogRead(pinX);
   
     digit = valuesSaved[currentDisplay];
   
-    if(xValue < minThreshold && joyMoved == false){
+    if(xValue < minThreshold && joyMoved == false) {
       joyMoved = true;
       digit--;
-      if(digit < 0){
+      
+      if(digit < 0) {
         digit = 9;
      }
+     
     valuesSaved[currentDisplay] = digit;
     }
     
-    if(xValue > maxThreshold && joyMoved == false){
+    if(xValue > maxThreshold && joyMoved == false) {
       joyMoved = true;
       digit++;
-      if(digit > 9){
+      
+      if(digit > 9) {
         digit = 0;
       }
-    valuesSaved[currentDisplay] = digit;
+      
+      valuesSaved[currentDisplay] = digit;
     }
 
-    if(xValue > minThreshold && xValue < maxThreshold){
+    if(xValue > minThreshold && xValue < maxThreshold) {
       joyMoved = false;
     }
   }
   else {
     yValue = analogRead(pinY);
   
-    if(yValue < minThreshold && joyMoved == false){
+    if(yValue < minThreshold && joyMoved == false) {
       joyMoved = true;
       currentDisplay++;
     
-    if(currentDisplay > 3){
+    if(currentDisplay > displayCount - 1) {
       currentDisplay = 0;
-    }
+     }
    }
 
-    if(yValue > maxThreshold && joyMoved == false){
+    if(yValue > maxThreshold && joyMoved == false) {
       joyMoved = true;
       currentDisplay--;
    
-      if(currentDisplay < 0){
-        currentDisplay = 3;
+      if(currentDisplay < 0) {
+        currentDisplay = displayCount - 1;
       }
     }
 
-   if(yValue > minThreshold && yValue < maxThreshold){
-    joyMoved = false;
-    }
+   if(yValue > minThreshold && yValue < maxThreshold) {
+      joyMoved = false;
+     }
   }
 
   updateValuesInMemory();
 }
 
 void showAll() {
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < displayCount; i++) {
     showDigits(i);
     
-    if(i == currentDisplay){
+    if(i == currentDisplay) {
       showDP();
     }
-    else{
+    else {
       writeReg(digitArray[valuesSaved[i]]);
     }
     delay(5);
@@ -177,17 +174,22 @@ void showDP() {
   if(switchDigit == true) {
     writeReg(digitArray[valuesSaved[currentDisplay]] + 1);
   }
-  else{
+  else { 
+    blinkDP(); 
+  }
+}
+
+void blinkDP() {
   if (millis() - previousMillis >= intervalBlink){
     previousMillis = millis();
     dpState = !dpState;
   }
-    if(dpState == LOW) {
-       writeReg(digitArray[valuesSaved[currentDisplay]] + 1);
-    }
-    else{
-       writeReg(digitArray[valuesSaved[currentDisplay]]);
-    }
+  
+  if(dpState == LOW) {
+    writeReg(digitArray[valuesSaved[currentDisplay]] + 1);
+  }
+  else{
+    writeReg(digitArray[valuesSaved[currentDisplay]]);
   }
 }
 
@@ -196,6 +198,12 @@ void showDigits(int displayNumber) {
     digitalWrite(displayDigits[i], HIGH);
   }
   digitalWrite(displayDigits[displayNumber], LOW);
+}
+
+void writeReg(int digit) {
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, MSBFIRST, digit);
+  digitalWrite(latchPin, HIGH);
 }
 
 void readValuesFromMemory() {
@@ -212,11 +220,4 @@ void updateValuesInMemory() {
   }
 
   EEPROM.update(currentDisplayAddress, currentDisplay);
-}
-
-void writeReg(int digit) {
-  
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, digit);
-  digitalWrite(latchPin, HIGH);
 }
